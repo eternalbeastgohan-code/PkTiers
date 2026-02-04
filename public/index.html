@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PakTiers Rankings</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 193, 7, 0.03) 0%, transparent 50%);
+            animation: bgFloat 12s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .header {
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0.7);
+            transition: filter 0.3s ease;
+        }
+
+        .nav-link:hover .nav-icon {
+            filter: brightness(1.2) saturate(1.5);
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            width: 300px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: rgba(30, 41, 59, 0.95);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+            transform: scale(1.02);
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(15, 20, 25, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            backdrop-filter: blur(20px);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-result {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+        }
+
+        .search-result:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .search-result:last-child {
+            border-bottom: none;
+        }
+
+        .search-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            image-rendering: pixelated;
+        }
+
+        .search-player-info {
+            flex: 1;
+        }
+
+        .search-player-name {
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        .search-player-details {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* High Tier (HT) Player Styles */
+        .player-name.high-tier {
+            position: relative;
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .player-name.high-tier::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 179, 0, 0.2));
+            border-radius: 8px;
+            z-index: -1;
+            animation: htGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes htGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 0.8; }
+        }
+
+        .player-name-large.high-tier {
+            position: relative;
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .player-name-large.high-tier::before {
+            content: '👑';
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8em;
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+        }
+
+        .tier-badge-small.high-tier {
+            background: linear-gradient(135deg, #ff6b35, #ff8f00);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 107, 53, 0.6);
+            animation: htPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes htPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .game-modes {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(15, 20, 25, 0.6);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(20px);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .game-modes::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mode-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mode-tab:hover::before {
+            opacity: 1;
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.1));
+            border-color: rgba(255, 215, 0, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+        }
+
+        .mode-tab:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .mode-icon {
+            width: 32px;
+            height: 32px;
+            filter: brightness(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .mode-tab:hover .mode-icon,
+        .mode-tab.active .mode-icon {
+            filter: brightness(1.2) saturate(1.3);
+            transform: scale(1.1);
+        }
+
+        .mode-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: capitalize;
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mode-tab:hover .mode-name,
+        .mode-tab.active .mode-name {
+            color: #ffd700;
+        }
+
+        .tiers-section {
+            display: none;
+        }
+
+        .tiers-section.active {
+            display: block;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            display: none;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            50% { text-shadow: 0 0 40px rgba(255, 215, 0, 0.5); }
+        }
+
+        .overall-rankings {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .rankings-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 200px;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.05));
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rankings-list {
+            max-height: 800px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+        }
+
+        .rankings-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .rankings-list::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .rankings-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.6), rgba(255, 193, 7, 0.4));
+            border-radius: 3px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 200px;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            align-items: center;
+        }
+
+        .ranking-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            transition: width 0.3s ease;
+        }
+
+        .ranking-item:hover::before {
+            width: 100%;
+        }
+
+        .ranking-item:hover {
+            background: rgba(255, 215, 0, 0.02);
+        }
+
+        .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .rank-number.rank-1 {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .rank-number.rank-2 {
+            background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+            color: #000;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.4);
+        }
+
+        .rank-number.rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #b8691a);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.4);
+        }
+
+        .rank-number.rank-top10 {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.1));
+            color: #ffd700;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .rank-number.rank-normal {
+            background: rgba(30, 41, 59, 0.6);
+            color: #94a3b8;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .player-info-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .player-avatar-large {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            image-rendering: pixelated;
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item:hover .player-avatar-large {
+            border-color: #ffd700;
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .player-details {
+            flex: 1;
+        }
+
+        .player-name-large {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            margin-bottom: 0.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .ranking-item:hover .player-name-large:not(.high-tier) {
+            color: #ffd700;
+        }
+
+        .player-title-large {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .region-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .region-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .region-na {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.15));
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .region-na::before {
+            content: '🇺🇸';
+        }
+
+        .region-eu {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(22, 163, 74, 0.15));
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+        }
+
+        .region-eu::before {
+            content: '🇪🇺';
+        }
+
+        .region-as {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.15));
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .region-as::before {
+            content: '🇯🇵';
+        }
+
+        .region-oc {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(147, 51, 234, 0.15));
+            color: #c4b5fd;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+
+        .region-oc::before {
+            content: '🇦🇺';
+        }
+
+        .player-tiers {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .tier-icon-small {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tier-icon-small img {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .tier-icon-small:hover img {
+            filter: brightness(1.2);
+            transform: scale(1.2);
+        }
+
+        .tier-badge-small {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 5px;
+            border-radius: 4px;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            letter-spacing: 0.3px;
+        }
+
+        .tier-columns {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+
+        .tier-column {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .tier-column:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .tier-header {
+            padding: 1.2rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.05));
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tier-trophy {
+            font-size: 1.5rem;
+        }
+
+        .tier-1 .tier-trophy { color: #ffd700; }
+        .tier-2 .tier-trophy { color: #c0c0c0; }
+        .tier-3 .tier-trophy { color: #cd7f32; }
+        .tier-4 .tier-trophy { color: #64748b; }
+        .tier-5 .tier-trophy { color: #475569; }
+
+        .tier-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .tier-section {
+            margin-bottom: 1rem;
+        }
+
+        .tier-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffd700;
+            padding: 0.8rem 1.2rem 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .players-list {
+            min-height: 600px;
+            max-height: calc(100vh - 400px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateX(4px);
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            image-rendering: pixelated;
+        }
+
+        .player-item:hover .player-avatar {
+            border-color: #ffd700;
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .player-item:hover .player-name:not(.high-tier) {
+            color: #ffd700;
+        }
+
+        .player-rank {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #ffd700;
+            border-radius: 50%;
+            margin: 2rem auto;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(25px);
+            z-index: 1000;
+            animation: modalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(15, 20, 25, 0.98), rgba(26, 26, 46, 0.98));
+            border-radius: 24px;
+            padding: 3rem;
+            width: 95%;
+            max-width: 650px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(30px);
+            position: relative;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 215, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #ef4444;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .modal-tier-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-tier-badge {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+        }
+
+        .modal-tier-badge.high-tier {
+            background: linear-gradient(135deg, #ff6b35, #ff8f00);
+            color: #fff;
+        }
+
+        @media (max-width: 1200px) {
+            .tier-columns {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tier-columns {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rankings-header, .ranking-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tier-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .game-modes {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects"></div>
+    
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="logos/PakTiers2.webp" alt="PakTiers Logo" class="logo-img">
+                <div class="logo">PAKTIERS</div>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">
+                    <img src="https://mctiers.com/nav_icons/rankings.svg" alt="Home" class="nav-icon">
+                    <span>Home</span>
+                </a>
+                <a href="/rankings" class="nav-link">
+                    <img src="https://mctiers.com/nav_icons/rankings.svg" alt="Rankings" class="nav-icon">
+                    <span>Rankings</span>
+                </a>
+                <a href="https://discord.gg/ez2gYAftkH" class="nav-link" target="_blank">
+                    <img src="https://mctiers.com/nav_icons/discord.svg" alt="Discord" class="nav-icon">
+                    <span>Discord</span>
+                </a>
+                <a href="profile.html" class="nav-link" id="profileLink" style="display: none;">
+                    <span style="font-size: 1.2rem;">👤</span>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search player..." id="playerSearch">
+                    <div class="search-dropdown" id="searchDropdown"></div>
+                </div>
+                <a href="#" onclick="checkAdminAccess()" style="font-size: 1.5rem; text-decoration: none; opacity: 0.7; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">⚙️</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="game-modes">
+            <div class="mode-tab active" data-mode="overall">
+                <img src="https://mctiers.com/tier_icons/overall.svg" alt="Overall" class="mode-icon">
+                <span class="mode-name">Overall</span>
+            </div>
+            <div class="mode-tab" data-mode="vanilla">
+                <img src="https://mctiers.com/tier_icons/vanilla.svg" alt="Vanilla" class="mode-icon">
+                <span class="mode-name">Vanilla</span>
+            </div>
+            <div class="mode-tab" data-mode="uhc">
+                <img src="https://mctiers.com/tier_icons/uhc.svg" alt="UHC" class="mode-icon">
+                <span class="mode-name">UHC</span>
+            </div>
+            <div class="mode-tab" data-mode="pot">
+                <img src="https://mctiers.com/tier_icons/pot.svg" alt="Pot" class="mode-icon">
+                <span class="mode-name">Pot</span>
+            </div>
+            <div class="mode-tab" data-mode="nethpot">
+                <img src="https://mctiers.com/tier_icons/nethop.svg" alt="Nethpot" class="mode-icon">
+                <span class="mode-name">Nethpot</span>
+            </div>
+            <div class="mode-tab" data-mode="smp">
+                <img src="https://mctiers.com/tier_icons/smp.svg" alt="SMP" class="mode-icon">
+                <span class="mode-name">SMP</span>
+            </div>
+            <div class="mode-tab" data-mode="sword">
+                <img src="https://mctiers.com/tier_icons/sword.svg" alt="Sword" class="mode-icon">
+                <span class="mode-name">Sword</span>
+            </div>
+            <div class="mode-tab" data-mode="axe">
+                <img src="https://mctiers.com/tier_icons/axe.svg" alt="Axe" class="mode-icon">
+                <span class="mode-name">Axe</span>
+            </div>
+            <div class="mode-tab" data-mode="mace">
+                <img src="https://mctiers.com/tier_icons/mace.svg" alt="Mace" class="mode-icon">
+                <span class="mode-name">Mace</span>
+            </div>
+        </div>
+
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        
+        <!-- Overall Section -->
+        <div class="tiers-section active" id="overall-section">
+            <div class="overall-rankings">
+                <div class="rankings-header">
+                    <div class="rank-col">#</div>
+                    <div class="player-col">PLAYER</div>
+                    <div class="region-col">REGION</div>
+                    <div class="tiers-col">TIERS</div>
+                </div>
+                <div class="rankings-list" id="overall-rankings-list"></div>
+            </div>
+        </div>
+
+        <!-- Individual Game Mode Sections -->
+        <div class="tiers-section" id="vanilla-section">
+            <h2 class="section-title">Vanilla Rankings</h2>
+            <div class="tier-columns" id="vanilla-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="uhc-section">
+            <h2 class="section-title">UHC Rankings</h2>
+            <div class="tier-columns" id="uhc-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="pot-section">
+            <h2 class="section-title">Pot Rankings</h2>
+            <div class="tier-columns" id="pot-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="nethpot-section">
+            <h2 class="section-title">Nethpot Rankings</h2>
+            <div class="tier-columns" id="nethpot-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="smp-section">
+            <h2 class="section-title">SMP Rankings</h2>
+            <div class="tier-columns" id="smp-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="sword-section">
+            <h2 class="section-title">Sword Rankings</h2>
+            <div class="tier-columns" id="sword-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="mace-section">
+            <h2 class="section-title">Mace Rankings</h2>
+            <div class="tier-columns" id="mace-tiers"></div>
+        </div>
+
+        <div class="tiers-section" id="axe-section">
+            <h2 class="section-title">Axe Rankings</h2>
+            <div class="tier-columns" id="axe-tiers"></div>
+        </div>
+
+        <!-- Player Modal -->
+        <div class="modal" id="playerModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentMode = 'overall';
+        let playersData = {};
+        let filteredData = {};
+        let searchTimeout;
+        let searchResults = [];
+
+        // Point system configuration (including HT bonuses)
+        const TIER_POINTS = {
+            1: 100, 2: 75, 3: 50, 4: 25, 5: 10,
+            'HT1': 110, 'HT2': 85, 'HT3': 60, 'HT4': 35, 'HT5': 20
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserSession();
+            init();
+        });
+
+        // Check if user is logged in
+        function checkUserSession() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                const profileLink = document.getElementById('profileLink');
+                if (profileLink) {
+                    profileLink.style.display = 'flex';
+                }
+            }
+        }
+
+        async function init() {
+            setupEventListeners();
+            await loadPlayersData();
+            renderCurrentSection();
+        }
+
+        function setupEventListeners() {
+            // Game mode tab switching
+            const modeTabs = document.querySelectorAll('.mode-tab');
+            modeTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const mode = this.dataset.mode;
+                    switchGameMode(mode);
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('playerSearch');
+            const searchDropdown = document.getElementById('searchDropdown');
+            
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('focus', showSearchDropdown);
+            
+            // Hide search dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    hideSearchDropdown();
+                }
+            });
+
+            // Close modal handlers
+            const modal = document.getElementById('playerModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    hideSearchDropdown();
+                }
+            });
+        }
+
+        async function handleSearch(e) {
+            const searchTerm = e.target.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (searchTerm.length === 0) {
+                hideSearchDropdown();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                const query = searchTerm.toLowerCase();
+                const allPlayers = playersData.overall || [];
+                searchResults = allPlayers.filter(p => 
+                    p.name.toLowerCase().includes(query)
+                ).slice(0, 5);
+                renderSearchResults();
+                showSearchDropdown();
+            }, 300);
+        }
+
+        function renderSearchResults() {
+            const searchDropdown = document.getElementById('searchDropdown');
+            
+            if (searchResults.length === 0) {
+                searchDropdown.innerHTML = '<div style="padding: 1rem; text-align: center; color: #64748b;">No players found</div>';
+                return;
+            }
+
+            searchDropdown.innerHTML = searchResults.map(player => {
+                const isHighTier = hasHighTier(player);
+                const htClass = isHighTier ? 'high-tier' : '';
+                
+                return `
+                    <div class="search-result" onclick="openPlayerModal('${player._id}')">
+                        <img src="${player.avatar || '/default-avatar.png'}" 
+                             alt="${player.name}" class="search-avatar" 
+                             onerror="this.src='/default-avatar.png'">
+                        <div class="search-player-info">
+                            <div class="search-player-name ${htClass}">${player.name}</div>
+                            <div class="search-player-details">${player.region} • ${player.totalPoints || 0} points</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showSearchDropdown() {
+            const searchDropdown = document.getElementById('searchDropdown');
+            if (searchResults.length > 0) {
+                searchDropdown.classList.add('active');
+            }
+        }
+
+        function hideSearchDropdown() {
+            document.getElementById('searchDropdown').classList.remove('active');
+        }
+
+        function hasHighTier(player) {
+            if (!player.tiers) return false;
+            return Object.values(player.tiers).some(tier => 
+                typeof tier === 'string' && tier.startsWith('HT')
+            );
+        }
+
+        function isHighTierValue(tier) {
+            return typeof tier === 'string' && tier.startsWith('HT');
+        }
+
+        function getTierNumber(tier) {
+            if (typeof tier === 'string' && tier.startsWith('HT')) {
+                return parseInt(tier.substring(2));
+            }
+            return parseInt(tier);
+        }
+
+        function switchGameMode(mode) {
+            if (currentMode === mode) return;
+
+            // Update active tab
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+
+            // Hide all sections
+            document.querySelectorAll('.tiers-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(`${mode}-section`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            currentMode = mode;
+            renderCurrentSection();
+        }
+
+        async function loadPlayersData() {
+            showLoading(true);
+            try {
+                const response = await fetch('/api/players');
+                if (!response.ok) throw new Error('Failed to fetch players data');
+                
+                const rawData = await response.json();
+                playersData = processPlayersData(rawData);
+                filteredData = { ...playersData };
+                
+            } catch (error) {
+                console.error('Error loading players:', error);
+                // Load empty data structure if everything fails
+                playersData = {
+                    overall: [],
+                    vanilla: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    uhc: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    pot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    nethpot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    smp: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    sword: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    axe: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                    mace: { 1: [], 2: [], 3: [], 4: [], 5: [] }
+                };
+                filteredData = { ...playersData };
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function processPlayersData(rawData) {
+            const processed = {
+                overall: [],
+                vanilla: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                uhc: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                pot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                nethpot: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                smp: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                sword: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                axe: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+                mace: { 1: [], 2: [], 3: [], 4: [], 5: [] }
+            };
+
+            // Process each player
+            rawData.forEach(player => {
+                let totalPoints = 0;
+                const playerTiers = [];
+
+                Object.keys(player.tiers || {}).forEach(mode => {
+                    const tier = player.tiers[mode];
+                    if (tier && TIER_POINTS[tier]) {
+                        totalPoints += TIER_POINTS[tier];
+                        playerTiers.push({ mode, tier });
+                        
+                        // Get tier number for grouping
+                        const tierNum = getTierNumber(tier);
+                        if (processed[mode] && processed[mode][tierNum]) {
+                            processed[mode][tierNum].push({
+                                ...player,
+                                tierInMode: tier,
+                                isHighTier: isHighTierValue(tier)
+                            });
+                        }
+                    }
+                });
+
+                // Add to overall rankings
+                processed.overall.push({
+                    ...player,
+                    totalPoints,
+                    playerTiers,
+                    isHighTier: hasHighTier(player)
+                });
+            });
+
+            // Sort overall by points (descending)
+            processed.overall.sort((a, b) => b.totalPoints - a.totalPoints);
+
+            // Sort tier lists: HT players first, then LT players, both alphabetically
+            Object.keys(processed).forEach(mode => {
+                if (mode !== 'overall') {
+                    Object.keys(processed[mode]).forEach(tier => {
+                        processed[mode][tier].sort((a, b) => {
+                            // HT players come first
+                            if (a.isHighTier && !b.isHighTier) return -1;
+                            if (!a.isHighTier && b.isHighTier) return 1;
+                            
+                            // Then sort alphabetically by name
+                            return a.name.localeCompare(b.name);
+                        });
+                    });
+                }
+            });
+
+            return processed;
+        }
+
+        function renderCurrentSection() {
+            if (currentMode === 'overall') {
+                renderOverallRankings();
+            } else {
+                renderTierSection(currentMode);
+            }
+        }
+
+        function renderOverallRankings() {
+            const container = document.getElementById('overall-rankings-list');
+            if (!container) return;
+
+            const players = filteredData.overall || [];
+            
+            if (players.length === 0) {
+                container.innerHTML = '<div class="error-message">No players found</div>';
+                return;
+            }
+
+            container.innerHTML = players.map((player, index) => {
+                const rank = index + 1;
+                const rankClass = getRankClass(rank);
+                const regionClass = `region-${player.region.toLowerCase()}`;
+                const htClass = player.isHighTier ? 'high-tier' : '';
+                
+                return `
+                    <div class="ranking-item" onclick="openPlayerModal('${player._id}')">
+                        <div class="rank-number ${rankClass}">${rank}</div>
+                        <div class="player-info-section">
+                            <img src="${player.avatar || '/default-avatar.png'}" alt="${player.name}" class="player-avatar-large" onerror="this.src='/default-avatar.png'">
+                            <div class="player-details">
+                                <div class="player-name-large ${htClass}">${player.name}</div>
+                                <div class="player-title-large">
+                                    <span class="player-points">${player.totalPoints} points</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="region-badge ${regionClass}">${player.region}</div>
+                        <div class="player-tiers">
+                            ${player.playerTiers.map(tierInfo => {
+                                const isHT = isHighTierValue(tierInfo.tier);
+                                const tierDisplay = isHT ? tierInfo.tier : tierInfo.tier;
+                                const htBadgeClass = isHT ? 'high-tier' : '';
+                                return `
+                                    <div class="tier-icon-small">
+                                        <img src="https://mctiers.com/tier_icons/${tierInfo.mode}.svg" alt="${tierInfo.mode}">
+                                        <span class="tier-badge-small ${htBadgeClass}">${tierDisplay}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTierSection(mode) {
+            const container = document.getElementById(`${mode}-tiers`);
+            if (!container) return;
+
+            const modeData = filteredData[mode] || {};
+            
+            container.innerHTML = [1, 2, 3, 4, 5].map(tier => {
+                const players = modeData[tier] || [];
+                const tierClass = `tier-${tier}`;
+                
+                // Separate HT and LT players
+                const htPlayers = players.filter(p => p.isHighTier);
+                const ltPlayers = players.filter(p => !p.isHighTier);
+                
+                return `
+                    <div class="tier-column ${tierClass}">
+                        <div class="tier-header">
+                            <span class="tier-trophy">🏆</span>
+                            <h3 class="tier-title">Tier ${tier}</h3>
+                        </div>
+                        <div class="players-list">
+                            ${htPlayers.length > 0 ? `
+                                <div class="tier-section">
+                                    <div class="tier-section-title">High Tier</div>
+                                    ${htPlayers.map(player => `
+                                        <div class="player-item" onclick="openPlayerModal('${player._id}')">
+                                            <img src="${player.avatar || '/default-avatar.png'}" alt="${player.name}" class="player-avatar" onerror="this.src='/default-avatar.png'">
+                                            <div class="player-info">
+                                                <div class="player-name high-tier">${player.name}</div>
+                                                <div class="player-rank">${player.region}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            ${ltPlayers.length > 0 ? `
+                                <div class="tier-section">
+                                    ${htPlayers.length > 0 ? '<div class="tier-section-title">Standard Tier</div>' : ''}
+                                    ${ltPlayers.map(player => `
+                                        <div class="player-item" onclick="openPlayerModal('${player._id}')">
+                                            <img src="${player.avatar || '/default-avatar.png'}" alt="${player.name}" class="player-avatar" onerror="this.src='/default-avatar.png'">
+                                            <div class="player-info">
+                                                <div class="player-name">${player.name}</div>
+                                                <div class="player-rank">${player.region}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            ${players.length === 0 ? '<div style="text-align: center; padding: 2rem; color: #64748b; font-style: italic;">No players found</div>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getRankClass(rank) {
+            if (rank === 1) return 'rank-1';
+            if (rank === 2) return 'rank-2';
+            if (rank === 3) return 'rank-3';
+            if (rank <= 10) return 'rank-top10';
+            return 'rank-normal';
+        }
+
+        function openPlayerModal(playerId) {
+            const player = playersData.overall.find(p => p._id === playerId);
+            if (!player) return;
+
+            const modal = document.getElementById('playerModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            const overallRank = playersData.overall.findIndex(p => p._id === playerId) + 1;
+            const htClass = player.isHighTier ? 'high-tier' : '';
+            const skinUrl = `https://mc-heads.net/body/${player.name}/100`;
+            
+            modalContent.innerHTML = `
+                <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+                    <img src="${skinUrl}" alt="${player.name}" 
+                         style="width: 100px; height: auto; image-rendering: pixelated; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));"
+                         onerror="this.src='https://mc-heads.net/body/steve/100'">
+                    <div style="flex: 1;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;" class="${htClass}">${player.name}</div>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <span class="region-badge region-${player.region.toLowerCase()}">${player.region}</span>
+                            <span style="color: #94a3b8;">Rank #${overallRank}</span>
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.1); padding: 0.8rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3); display: inline-block;">
+                            <span style="color: #94a3b8; font-size: 0.85rem;">Total Points</span>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #ffd700;">${player.totalPoints}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${player.playerTiers.length > 0 ? `
+                <div style="margin-top: 2rem;">
+                    <div style="font-size: 1.2rem; font-weight: 700; color: #e2e8f0; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(255, 215, 0, 0.2);">Game Modes</div>
+                    <div style="display: grid; gap: 0.8rem;">
+                        ${player.playerTiers.map(tierInfo => {
+                            const isHT = isHighTierValue(tierInfo.tier);
+                            const tierNumber = getTierNumber(tierInfo.tier);
+                            const tierDisplay = isHT ? `HT${tierNumber}` : `T${tierNumber}`;
+                            const tierColor = isHT ? '#ff6b35' : '#ffd700';
+                            const modeName = tierInfo.mode.charAt(0).toUpperCase() + tierInfo.mode.slice(1);
+                            
+                            return `
+                                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 10px; padding: 1rem; display: flex; align-items: center; justify-content: space-between; transition: 0.3s;" onmouseover="this.style.background='rgba(255, 215, 0, 0.05)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <img src="https://mctiers.com/tier_icons/${tierInfo.mode}.svg" alt="${tierInfo.mode}" 
+                                             style="width: 36px; height: 36px;">
+                                        <span style="font-weight: 600; font-size: 1.05rem; color: #e2e8f0;">${modeName}</span>
+                                    </div>
+                                    <div style="background: ${isHT ? 'linear-gradient(135deg, #ff6b35, #ff8f00)' : 'linear-gradient(135deg, #ffd700, #ffb300)'}; color: ${isHT ? '#fff' : '#000'}; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                        ${tierDisplay}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                ` : '<div style="text-align: center; color: #64748b; padding: 2rem; font-style: italic;">No tiers assigned</div>'}
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('playerModal');
+            modal.classList.remove('active');
+        }
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.classList.toggle('active', show);
+            }
+        }
+
+        function showError(message) {
+            const container = document.querySelector('.tiers-section.active .rankings-list, .tiers-section.active .tier-columns');
+            if (container) {
+                container.innerHTML = `<div class="error-message">${message}</div>`;
+            }
+        }
+
+        function checkAdminAccess() {
+            const adminSession = localStorage.getItem('adminSession');
+            if (adminSession) {
+                window.location.href = 'admin-panel.html';
+            } else {
+                window.location.href = 'admin.html';
+            }
+        }
+    </script>
+</body>
+</html>

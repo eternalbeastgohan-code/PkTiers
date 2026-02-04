@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PakTiers - Minecraft Testing Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            color: #000;
+        }
+
+        .cta-secondary {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .stats {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 2rem;
+            margin: 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="logos/PakTiers2.webp" alt="PakTiers Logo" class="logo-img">
+                <div class="logo">PAKTIERS</div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Rankings</a>
+                <a href="https://discord.gg/ez2gYAftkH" class="nav-link" target="_blank">Discord</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Welcome to PakTiers</h1>
+            <p>The ultimate Minecraft testing platform for Pakistani and international players. Join our community and prove your skills across multiple game modes.</p>
+            <div class="cta-buttons">
+                <a href="https://discord.gg/ez2gYAftkH" class="cta-btn cta-primary" target="_blank">Join Discord</a>
+                <a href="index.html" class="cta-btn cta-secondary">View Rankings</a>
+            </div>
+        </section>
+
+        <section class="stats">
+            <h2 style="color: #ffd700; margin-bottom: 1rem;">Live Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-number" id="totalPlayers">0</div>
+                    <div class="stat-label">Total Players</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="totalTests">0</div>
+                    <div class="stat-label">Tests Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="gamemodes">9</div>
+                    <div class="stat-label">Game Modes</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">🎮</div>
+                <h3>Multiple Game Modes</h3>
+                <p>Test your skills in Pot, UHC, SMP, Sword, Axe, Crystal, Mace, and more specialized game modes.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                <h3>Tier System</h3>
+                <p>Earn ranks from T5 to T1, with special High Tier (HT) recognition for exceptional players.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>Discord Bot</h3>
+                <p>Automated queue system, ticket management, and seamless testing experience through our Discord bot.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Live Rankings</h3>
+                <p>Real-time leaderboards and player statistics updated automatically as tests are completed.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <h3>Global Community</h3>
+                <p>Connect with players from Pakistan and around the world in our growing Minecraft testing community.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Testing</h3>
+                <p>Quick and efficient testing process with experienced testers and streamlined queue management.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Load stats from API
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalPlayers').textContent = stats.totalPlayers || 0;
+                document.getElementById('totalTests').textContent = stats.totalTests || 0;
+                document.getElementById('gamemodes').textContent = stats.gamemodes || 9;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Load stats on page load
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
+</body>
+</html>
