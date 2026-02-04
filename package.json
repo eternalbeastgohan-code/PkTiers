@@ -1,0 +1,13 @@
+{
+  "name": "paktiers-website",
+  "version": "1.0.0",
+  "description": "PakTiers Website - Minecraft Testing Platform",
+  "main": "public/home.html",
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "start": "echo 'Static site'"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
